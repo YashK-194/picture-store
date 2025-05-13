@@ -1,0 +1,16 @@
+.picture-list {
+  padding: 20px;
+}
+
+.pictures-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.picture-list h2 {
+  text-align: center;
+  color: #264653;
+  margin-bottom: 20px;
+  font-size: 28px;
+}

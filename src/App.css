@@ -1,3 +1,8 @@
+body {
+  background-color: #f8f9fa;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .App {
   text-align: center;
 }
@@ -14,14 +19,56 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  background-color: #264653;
+  padding: 20px;
   color: white;
+  margin-bottom: 20px;
+}
+
+.App-header h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.App-header p {
+  margin: 10px 0 0;
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+.store-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 992px) {
+  .store-container {
+    flex-wrap: nowrap;
+  }
+
+  .shopping-cart {
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+  }
+}
+
+/* For mobile view */
+@media (max-width: 991px) {
+  .store-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .shopping-cart {
+    width: calc(100% - 40px);
+    max-width: none;
+    margin-bottom: 40px;
+    order: -1;
+  }
 }
 
 .App-link {
