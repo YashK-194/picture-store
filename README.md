@@ -44,7 +44,7 @@ src/
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/picture-store.git
+   git clone https://github.com/YashK-194/picture-store.git
    cd picture-store
    ```
 
