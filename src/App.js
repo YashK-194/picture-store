@@ -1,26 +1,170 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import PictureList from "./components/PictureList";
 import ShoppingCart from "./components/ShoppingCart";
+import WalletConnect from "./components/WalletConnect";
 import picturesData from "./data/picturesData";
 import useCart from "./hooks/useCart";
-import { APP_TITLE, APP_DESCRIPTION } from "./utils/constants";
+import { ethers } from "ethers";
+import {
+  APP_TITLE,
+  APP_DESCRIPTION,
+  CONTRACT_ADDRESS,
+  CONTRACT_ABI,
+} from "./utils/constants";
 
 function App() {
+  const [account, setAccount] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [txStatus, setTxStatus] = useState("");
+
+  // Add event listener for account changes
+  useEffect(() => {
+    if (window.ethereum) {
+      // Handle account changes
+      const handleAccountsChanged = (accounts) => {
+        if (accounts.length === 0) {
+          // User disconnected their wallet
+          setAccount(null);
+          console.log("Wallet disconnected");
+        } else {
+          // User switched accounts
+          setAccount(accounts[0]);
+          console.log("Wallet account changed:", accounts[0]);
+        }
+      };
+
+      // Subscribe to account change events
+      window.ethereum.on("accountsChanged", handleAccountsChanged);
+
+      // Clean up the event listener on component unmount
+      return () => {
+        window.ethereum.removeListener(
+          "accountsChanged",
+          handleAccountsChanged
+        );
+      };
+    }
+  }, []);
+
+  const connectWallet = async () => {
+    setIsLoading(true);
+    try {
+      if (window.ethereum) {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        setAccount(accounts[0]);
+      } else {
+        alert("MetaMask is required to connect");
+      }
+    } catch (error) {
+      console.error("Error connecting wallet:", error);
+    }
+    setIsLoading(false);
+  };
+
+  // Check if wallet is connected
+  const isWalletConnected = !!account;
+
   const {
     cartItems,
     soldPictures,
     addToCart,
     removeFromCart,
-    checkout,
+    completePurchase,
     totalPrice,
   } = useCart();
+
+  const handlePurchase = async () => {
+    if (!isWalletConnected) {
+      setTxStatus("Please connect your wallet first");
+      setTimeout(() => setTxStatus(""), 3000);
+      return;
+    }
+
+    if (!totalPrice || totalPrice <= 0) {
+      alert("Please add items to your cart first");
+      return;
+    }
+
+    setIsProcessing(true);
+    setTxStatus("Connecting to wallet...");
+
+    try {
+      // Check if MetaMask is installed
+      if (!window.ethereum) {
+        throw new Error("Please install MetaMask to make purchases");
+      }
+
+      // Request account access
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      const account = accounts[0];
+
+      setTxStatus("Preparing transaction...");
+
+      // Create a provider and signer
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      // Create contract instance
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESS,
+        CONTRACT_ABI,
+        signer
+      );
+
+      // Convert price from ETH to Wei
+      const priceInWei = ethers.utils.parseEther(totalPrice.toString());
+
+      setTxStatus("Confirming transaction...");
+
+      // Call the purchasePicture function
+      const tx = await contract.purchasePicture({
+        value: priceInWei,
+        gasLimit: 300000,
+      });
+
+      setTxStatus("Transaction submitted! Waiting for confirmation...");
+
+      // Wait for transaction confirmation
+      await tx.wait();
+
+      setTxStatus("Purchase successful!");
+
+      // Complete the purchase in the cart
+      completePurchase();
+
+      // Clear status after a delay
+      setTimeout(() => {
+        setTxStatus("");
+      }, 3000);
+    } catch (error) {
+      console.error("Purchase error:", error);
+      setTxStatus("Transation failed. Please try again.");
+
+      // Clear the error message after a delay
+      setTimeout(() => {
+        setTxStatus("");
+      }, 5000);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>{APP_TITLE}</h1>
         <p>{APP_DESCRIPTION}</p>
+        <WalletConnect
+          account={account}
+          onConnect={connectWallet}
+          isLoading={isLoading}
+        />
       </header>
 
       <div className="store-container">
@@ -33,8 +177,11 @@ function App() {
         <ShoppingCart
           cartItems={cartItems}
           onRemoveFromCart={removeFromCart}
-          onCheckout={checkout}
+          onCheckout={handlePurchase}
           totalPrice={totalPrice}
+          isProcessing={isProcessing}
+          txStatus={txStatus}
+          isWalletConnected={isWalletConnected}
         />
       </div>
     </div>

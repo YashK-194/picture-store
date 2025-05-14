@@ -8,6 +8,7 @@ import { PURCHASE_SUCCESS_MESSAGE } from "../utils/constants";
 export const useCart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [soldPictures, setSoldPictures] = useState([]);
+  const [isPurchaseComplete, setIsPurchaseComplete] = useState(false);
 
   /**
    * Add a picture to the shopping cart
@@ -29,9 +30,10 @@ export const useCart = () => {
   };
 
   /**
-   * Process checkout of items in cart
+   * Process checkout of items in cart - now separated from blockchain transaction
+   * Called after successful blockchain transaction
    */
-  const checkout = () => {
+  const completePurchase = () => {
     if (cartItems.length > 0) {
       // Add all cart items to sold pictures list
       const soldIds = cartItems.map((item) => item.id);
@@ -39,9 +41,15 @@ export const useCart = () => {
 
       // Clear the cart
       setCartItems([]);
-
+      
+      // Reset purchase state
+      setIsPurchaseComplete(true);
+      
       // Show confirmation message
       alert(PURCHASE_SUCCESS_MESSAGE);
+      
+      // Reset the purchase complete flag after a short delay
+      setTimeout(() => setIsPurchaseComplete(false), 1000);
     }
   };
 
@@ -50,7 +58,9 @@ export const useCart = () => {
     soldPictures,
     addToCart,
     removeFromCart,
-    checkout,
+    completePurchase,
+    isPurchaseComplete,
+    setIsPurchaseComplete,
     totalPrice: cartItems.reduce((total, item) => total + item.price, 0),
   };
 };

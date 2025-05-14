@@ -9,7 +9,7 @@ const PictureItem = ({ picture, onAddToCart, isAvailable }) => {
       <h3>{picture.name}</h3>
       <p className="description">{picture.description}</p>
       <div className="price-buy">
-        <span className="price">${picture.price.toFixed(2)}</span>
+        <span className="price">{picture.price} ETH</span>
         {isAvailable ? (
           <button
             className="buy-button"

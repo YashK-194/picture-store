@@ -4,7 +4,7 @@
   padding: 20px;
   margin: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
+  width: 400px;
 }
 
 .shopping-cart h2 {
@@ -82,6 +82,56 @@
   margin-bottom: 15px;
 }
 
+.pay-button {
+  width: 100%;
+  background-color: #2a9d8f;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.pay-button:hover {
+  background-color: #264653;
+}
+
+.pay-button:disabled {
+  background-color: #adb5bd;
+  cursor: not-allowed;
+}
+
+.transaction-status {
+  margin-top: 12px;
+  padding: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+  color: #495057;
+}
+
+/* Error message styling */
+.error-status {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.wallet-warning {
+  margin-top: 12px;
+  padding: 8px;
+  background-color: #fff3cd;
+  color: #856404;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Keep the checkout-button styles for backward compatibility */
 .checkout-button {
   width: 100%;
   background-color: #2a9d8f;

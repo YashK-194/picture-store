@@ -44,12 +44,62 @@ body {
   margin: 0 auto;
 }
 
+.checkout-section {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  margin-left: 20px;
+}
+
+.purchase-handler {
+  margin-top: 10px;
+  padding: 15px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.pay-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #2a9d8f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.pay-button:hover {
+  background-color: #218879;
+}
+
+.pay-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.transaction-status {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
 @media (min-width: 992px) {
   .store-container {
     flex-wrap: nowrap;
   }
 
   .shopping-cart {
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+  }
+
+  .checkout-section {
     position: sticky;
     top: 20px;
     align-self: flex-start;
@@ -67,6 +117,14 @@ body {
     width: calc(100% - 40px);
     max-width: none;
     margin-bottom: 40px;
+    order: -1;
+  }
+
+  .checkout-section {
+    width: calc(100% - 40px);
+    max-width: none;
+    margin-bottom: 40px;
+    margin-left: 0;
     order: -1;
   }
 }

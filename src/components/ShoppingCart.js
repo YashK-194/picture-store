@@ -5,9 +5,15 @@ import { EMPTY_CART_MESSAGE } from "../utils/constants";
 const ShoppingCart = ({
   cartItems,
   onRemoveFromCart,
-  onCheckout,
   totalPrice,
+  onCheckout,
+  isProcessing,
+  txStatus,
+  isWalletConnected,
 }) => {
+  // Determine if the status message is an error
+  const isError = txStatus && txStatus.toLowerCase().includes("error");
+
   return (
     <div className="shopping-cart">
       <h2>Shopping Cart</h2>
@@ -26,7 +32,7 @@ const ShoppingCart = ({
                 />
                 <div className="cart-item-info">
                   <h4>{item.name}</h4>
-                  <p className="cart-item-price">${item.price.toFixed(2)}</p>
+                  <p className="cart-item-price">{item.price} ETH</p>
                 </div>
                 <button
                   className="remove-button"
@@ -42,15 +48,41 @@ const ShoppingCart = ({
           <div className="cart-summary">
             <div className="cart-total">
               <span>Total:</span>
-              <span>${totalPrice.toFixed(2)}</span>
+              <span>{totalPrice.toFixed(4)} ETH</span>
             </div>
+
             <button
-              className="checkout-button"
               onClick={onCheckout}
-              disabled={cartItems.length === 0}
+              disabled={
+                !isWalletConnected ||
+                isProcessing ||
+                !totalPrice ||
+                totalPrice <= 0
+              }
+              className="pay-button"
             >
-              Pay
+              {isProcessing
+                ? "Processing..."
+                : isWalletConnected
+                ? `Pay ${totalPrice.toFixed(4)} ETH`
+                : "Connect Wallet to Pay"}
             </button>
+
+            {txStatus && (
+              <p
+                className={`transaction-status ${
+                  isError ? "error-status" : ""
+                }`}
+              >
+                {txStatus}
+              </p>
+            )}
+
+            {!isWalletConnected && cartItems.length > 0 && !txStatus && (
+              <p className="wallet-warning">
+                Please connect your wallet to complete purchase
+              </p>
+            )}
           </div>
         </>
       )}
