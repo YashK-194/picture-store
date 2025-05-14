@@ -3,6 +3,10 @@ export const APP_TITLE = "Picture Store";
 export const APP_DESCRIPTION = "Select and buy your favorite pictures";
 export const EMPTY_CART_MESSAGE = "Your cart is empty";
 export const PURCHASE_SUCCESS_MESSAGE = "Thank you for your purchase!";
+
+// Network constants
+export const SEPOLIA_ETHERSCAN_URL = "https://sepolia.etherscan.io";
+
 // smart contract constants
 export const CONTRACT_ADDRESS = "0xf23f4Aa4A5f1F8d14e62025365395283d0CCAcc3";
 export const CONTRACT_ABI = [

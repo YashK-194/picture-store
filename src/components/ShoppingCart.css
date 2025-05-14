@@ -131,6 +131,37 @@
   font-size: 14px;
 }
 
+.tx-hash-container {
+  margin-top: 12px;
+  padding: 8px;
+  background-color: #e8f4fd;
+  border-radius: 4px;
+  text-align: center;
+  border: 1px solid #bee5eb;
+}
+
+.tx-hash-link {
+  color: #0366d6;
+  font-weight: 500;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 
+.tx-hash-link::before {
+  content: "📊";
+  margin-right: 6px;
+  font-size: 16px;
+}
+*/
+
+.tx-hash-link:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
 /* Keep the checkout-button styles for backward compatibility */
 .checkout-button {
   width: 100%;

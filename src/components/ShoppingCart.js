@@ -1,6 +1,6 @@
 import React from "react";
 import "./ShoppingCart.css";
-import { EMPTY_CART_MESSAGE } from "../utils/constants";
+import { EMPTY_CART_MESSAGE, SEPOLIA_ETHERSCAN_URL } from "../utils/constants";
 
 const ShoppingCart = ({
   cartItems,
@@ -9,6 +9,7 @@ const ShoppingCart = ({
   onCheckout,
   isProcessing,
   txStatus,
+  txHash,
   isWalletConnected,
 }) => {
   // Determine if the status message is an error
@@ -78,11 +79,27 @@ const ShoppingCart = ({
               </p>
             )}
 
-            {!isWalletConnected && cartItems.length > 0 && !txStatus && (
-              <p className="wallet-warning">
-                Please connect your wallet to complete purchase
-              </p>
+            {txHash && (
+              <div className="tx-hash-container">
+                <a
+                  href={`${SEPOLIA_ETHERSCAN_URL}/tx/${txHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tx-hash-link"
+                >
+                  View on Etherscan
+                </a>
+              </div>
             )}
+
+            {!isWalletConnected &&
+              cartItems.length > 0 &&
+              !txStatus &&
+              !txHash && (
+                <p className="wallet-warning">
+                  Please connect your wallet to complete purchase
+                </p>
+              )}
           </div>
         </>
       )}

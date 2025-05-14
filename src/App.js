@@ -18,6 +18,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [txStatus, setTxStatus] = useState("");
+  const [txHash, setTxHash] = useState("");
 
   // Add event listener for account changes
   useEffect(() => {
@@ -49,6 +50,12 @@ function App() {
   }, []);
 
   const connectWallet = async () => {
+    // If wallet is already connected, disconnect it
+    if (account) {
+      setAccount(null);
+      return;
+    }
+
     setIsLoading(true);
     try {
       if (window.ethereum) {
@@ -89,6 +96,8 @@ function App() {
       return;
     }
 
+    // Reset transaction hash at the beginning of each purchase
+    setTxHash("");
     setIsProcessing(true);
     setTxStatus("Connecting to wallet...");
 
@@ -128,6 +137,9 @@ function App() {
         gasLimit: 300000,
       });
 
+      // Store the transaction hash
+      setTxHash(tx.hash);
+
       setTxStatus("Transaction submitted! Waiting for confirmation...");
 
       // Wait for transaction confirmation
@@ -138,13 +150,18 @@ function App() {
       // Complete the purchase in the cart
       completePurchase();
 
-      // Clear status after a delay
+      // Don't clear the transaction hash or status immediately
       setTimeout(() => {
         setTxStatus("");
-      }, 3000);
+        // Keep the transaction hash visible for much longer
+        setTimeout(() => {
+          setTxHash("");
+        }, 30000); // Keep hash visible for 30 more seconds after status is cleared
+      }, 5000);
     } catch (error) {
       console.error("Purchase error:", error);
-      setTxStatus("Transation failed. Please try again.");
+      setTxStatus("Transaction failed. Please try again.");
+      setTxHash(""); // Clear hash on error
 
       // Clear the error message after a delay
       setTimeout(() => {
@@ -181,6 +198,7 @@ function App() {
           totalPrice={totalPrice}
           isProcessing={isProcessing}
           txStatus={txStatus}
+          txHash={txHash}
           isWalletConnected={isWalletConnected}
         />
       </div>

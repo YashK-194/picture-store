@@ -14,9 +14,9 @@ const WalletConnect = ({ account, onConnect, isLoading }) => {
     <div className="wallet-connect">
       {account ? (
         <div className="wallet-info">
-          <span className="wallet-address">
+          <button className="disconnect-button" onClick={onConnect}>
             Connected: {formatAddress(account)}
-          </span>
+          </button>
         </div>
       ) : (
         <button
