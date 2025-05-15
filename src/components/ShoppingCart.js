@@ -15,6 +15,11 @@ const ShoppingCart = ({
   // Determine if the status message is an error
   const isError = txStatus && txStatus.toLowerCase().includes("error");
 
+  // Format price to display as "0.0000001 ETH" in the cart
+  const formatPrice = (price) => {
+    return `${price.toFixed(7)} ETH`;
+  };
+
   return (
     <div className="shopping-cart">
       <h2>Shopping Cart</h2>
@@ -33,7 +38,7 @@ const ShoppingCart = ({
                 />
                 <div className="cart-item-info">
                   <h4>{item.name}</h4>
-                  <p className="cart-item-price">{item.price} ETH</p>
+                  <p className="cart-item-price">{formatPrice(item.price)}</p>
                 </div>
                 <button
                   className="remove-button"
@@ -49,7 +54,7 @@ const ShoppingCart = ({
           <div className="cart-summary">
             <div className="cart-total">
               <span>Total:</span>
-              <span>{totalPrice.toFixed(4)} ETH</span>
+              <span>{formatPrice(totalPrice)}</span>
             </div>
 
             <button
@@ -65,7 +70,7 @@ const ShoppingCart = ({
               {isProcessing
                 ? "Processing..."
                 : isWalletConnected
-                ? `Pay ${totalPrice.toFixed(4)} ETH`
+                ? `Pay ${formatPrice(totalPrice)}`
                 : "Connect Wallet to Pay"}
             </button>
 

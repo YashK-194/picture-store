@@ -62,14 +62,29 @@ function App() {
         const accounts = await window.ethereum.request({
           method: "eth_requestAccounts",
         });
-        setAccount(accounts[0]);
+        // Only set the account if we actually got one back (user didn't reject)
+        if (accounts && accounts.length > 0) {
+          setAccount(accounts[0]);
+        }
       } else {
         alert("MetaMask is required to connect");
       }
     } catch (error) {
       console.error("Error connecting wallet:", error);
+      // Show a user-friendly message based on the error
+      if (error.code === 4001) {
+        // User rejected the request
+        console.log("User rejected the connection request");
+      } else if (error.code === -32002) {
+        // Request already pending
+        alert(
+          "You have a pending connection request in MetaMask. Please check your MetaMask extension."
+        );
+      }
+    } finally {
+      // Always reset loading state, whether successful or not
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   // Check if wallet is connected
@@ -126,8 +141,10 @@ function App() {
         signer
       );
 
+      const priceString = totalPrice.toFixed(18);
+
       // Convert price from ETH to Wei
-      const priceInWei = ethers.utils.parseEther(totalPrice.toString());
+      const priceInWei = ethers.utils.parseEther(priceString);
 
       setTxStatus("Confirming transaction...");
 
